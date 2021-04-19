@@ -1,5 +1,4 @@
 import pandas as pd
-import os
 import datetime
 import pathlib
 from extract_from_html import Extractor
@@ -26,8 +25,9 @@ for path in paths:
         course_details, class_details = ex.compile_df()
 
         # append to table
-        course_df.append(course_details)
-        class_df.append(class_details)
+        course_df = course_df.append(course_details)
+        class_df = class_df.append(class_details)
+
 
 pathlib.Path("data/compiled_data/course_details/").mkdir(parents=True, exist_ok=True)
 pathlib.Path("data/compiled_data/class_details/").mkdir(parents=True, exist_ok=True)
