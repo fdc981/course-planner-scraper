@@ -42,7 +42,8 @@ class Extractor:
 
     def class_details_as_df(self) -> pd.DataFrame:
         """Return the class details tables as a single dataframe."""
-        if len(self.class_details) == 0:
+        # check whether there are no class details
+        if self.class_details == None:
             return pd.DataFrame()
 
         # wrap all immediate <td>s in the <table> with <tr>
@@ -57,6 +58,11 @@ class Extractor:
         # ensure no `NavigableString`s are present
         table_soup = self.class_details.table.find_all("tr", recursive=False)
         table_str = [str(el) for el in table_soup]
+
+        if len(table_soup) < 3:
+            print(table_soup)
+            print("** Warning: no contents in class details table")
+            return pd.DataFrame()
 
         i = 0
         start = 0
@@ -123,6 +129,10 @@ class Extractor:
             tc[0].append(group_header)
             tc[0].append(note_header)
 
+            # check whether there are no rows of information in the table
+            if len(tc) == 1:
+                print("** Warning: table has no contents, skipping")
+                break;
 
             rowspan_tag = tc[1].find("td", {"rowspan" : True})
             if rowspan_tag == None:
