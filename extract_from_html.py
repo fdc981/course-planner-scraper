@@ -11,6 +11,24 @@ class Extractor:
         self.course_details = self.soup.find("div", {"id": "hidedata01_1"})
         self.class_details = self.soup.find("div", {"id": "hidedata04_1"})
 
+    def __is_group_header(self, elem_soup):
+        """Determines the given element is a group header for the corresponding class details table"""
+        attrs = elem_soup.attrs
+        return "class" in attrs and attrs["class"] == ["trgroup"]
+
+    def __is_class_type_header(self, elem_soup):
+        """Determines the given element is a header indicating class type for the corresponding class details table"""
+        return elem_soup.find("th", {"class" : "course", "colspan" : 8})
+
+    def __is_start_of_class_subtable(self, elem_soup):
+        """Determines whether an element is part of a subclass"""
+        return self.__is_group_header(elem_soup) or self.__is_class_type_header(elem_soup)
+
+    def __is_class_data_header(self, elem_soup):
+        """Determines the given element is a header containing the column names of the table"""
+        attrs = elem_soup.attrs
+        return "class" in attrs and attrs["class"] == ["trheader"]
+
     def course_details_as_df(self) -> pd.DataFrame:
         """Return the course details table as a dataframe."""
         dfs = pd.read_html(str(self.course_details), index_col = 0)
@@ -30,32 +48,114 @@ class Extractor:
         # wrap all immediate <td>s in the <table> with <tr>
         tds = self.class_details.table.find_all("td", recursive=False)
         for td in tds:
-            td.wrap(self.soup.new_tag("tr"))
+            wrapper = self.soup.new_tag("tr")
+            wrapper.attrs = {"class" : "note"}
+            td.wrap(wrapper)
 
-        # Split the html up, wrapping all tds with tr
+        # Split the html up.
 
+        # ensure no `NavigableString`s are present
         table_soup = self.class_details.table.find_all("tr", recursive=False)
         table_str = [str(el) for el in table_soup]
 
+        i = 0
         start = 0
         result = ""
-        for i, tr in enumerate(table_soup):
-            if i != 0 and len(tr.find_all("th")) == 1:
-                result += "<table>" + '\n'.join(table_str[start:i]) + "</table>"
-                start = i
+        while i < len(table_soup):
+            while start != len(table_soup) and not self.__is_start_of_class_subtable(table_soup[start]):
+                start += 1
 
-        result += "<table>" + '\n'.join(table_str[start:len(table_str)]) + "</table>"
+            # skips either <tr class="trheader"> or <tr class="data">
+            i = start + 2
+
+            while i < len(table_soup) and not self.__is_start_of_class_subtable(table_soup[i]):
+                i += 1
+
+            result += "<table>" + ''.join(table_str[start:i]) + "</table>"
+            start = i
 
         self.result = result
 
-        dfs = pd.read_html(result)
+        # collapse all group and class type data into each subtable
+        result_soup = bs4.BeautifulSoup(result, features="lxml")
+        group = "" # allow group data to carry through iterations
+        for table in result_soup.find_all("table"):
+            tc = table.contents
 
-        # flatten columns, ensuring to store class type information
-        for df in dfs:
-            class_type = df.columns[0][0]
-            df.columns = df.columns.get_level_values(1)
-            df.columns.append(pd.Index(["Class Type:"]))
-            df["Class Type"] = class_type
+            # find the position of the <tr class="trheader"> tag
+            trheader_index = 0
+            while not self.__is_class_data_header(tc[trheader_index]):
+                trheader_index += 1
+
+            if trheader_index > 2:
+                raise Exception("Unexpected position for trheader: %d" % trheader_index)
+            elif trheader_index < 1:
+                raise Exception("Missing class type data from class details subtable.")
+
+            class_type = tc[trheader_index - 1].string
+
+            if trheader_index > 1:
+                group = tc[trheader_index - 2].get_text()
+                del tc[1]
+
+            del tc[0]
+
+            if not self.__is_class_data_header(tc[0]):
+                raise Exception("First element is not class data header")
+
+            if tc[-1].get_text().find("Note:") != -1:
+                note = tc[-1].get_text()
+                del tc[-1]
+            else:
+                note = ""
+
+            # append extra headers to trheader
+            class_type_header = result_soup.new_tag("th")
+            class_type_header.string = "Class Type"
+
+            group_header = result_soup.new_tag("th")
+            group_header.string = "Group"
+
+            note_header = result_soup.new_tag("th")
+            note_header.string = "Note"
+
+            tc[0].append(class_type_header)
+            tc[0].append(group_header)
+            tc[0].append(note_header)
+
+
+            rowspan_tag = tc[1].find("td", {"rowspan" : True})
+            if rowspan_tag == None:
+                print("** Warning: unable to find tag containg rowspan, setting rowspan = 1")
+                rowspan = 1
+            else:
+                rowspan = int(rowspan_tag.attrs["rowspan"])
+
+            # if note exists
+            if note != "":
+                # exclude an extra row
+                for el in tc[1].find_all("td", {"rowspan" : rowspan}):
+                    el["rowspan"] = int(el["rowspan"]) - 1
+                rowspan -= 1
+
+            # insert extra data into <tr class="data">
+            class_type_tag = result_soup.new_tag("td")
+            class_type_tag.attrs = {"class" : "odd", "rowspan" : rowspan}
+            class_type_tag.string = class_type
+
+            group_tag = result_soup.new_tag("td")
+            group_tag.attrs = {"class" : "odd", "rowspan" : rowspan}
+            group_tag.string = group
+
+            note_tag = result_soup.new_tag("td")
+            note_tag.attrs = {"class" : "odd", "rowspan" : rowspan}
+            note_tag.string = note
+
+            tc[1].append(class_type_tag)
+            tc[1].append(group_tag)
+            tc[1].append(note_tag)
+
+        dfs = pd.read_html(str(result_soup))
 
         # merge all data into one dataframe
         return pd.concat(dfs)
