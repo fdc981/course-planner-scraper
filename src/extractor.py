@@ -170,8 +170,11 @@ class Extractor:
         # merge all data into one dataframe
         df = pd.concat(dfs)
 
-        # add course title
-        df["Course Title"] = self.soup.title.string
+        # insert additional data from course title
+        full_course_title = self.soup.title.string.strip().split(' - ')
+        df["Subject Area"] = ' '.join(full_course_title[0].split(' ')[:-1])
+        df["Catalogue Number"] = full_course_title[0].split(' ')[-1]
+        df["Course Title"] = full_course_title[-1]
 
         return df
 

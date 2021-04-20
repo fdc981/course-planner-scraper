@@ -1,12 +1,12 @@
 import pandas as pd
 import datetime
 import pathlib
-from extract_from_html import Extractor
+from src.extractor import Extractor
 
 course_df = pd.DataFrame()
 class_df = pd.DataFrame()
 
-curr_date = "2021-04-16"
+curr_date = "2021-04-19"
 
 root = pathlib.Path('.')
 paths = root.glob("data/snapshots/*/%s/" % curr_date)
