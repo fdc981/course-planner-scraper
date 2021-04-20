@@ -168,7 +168,12 @@ class Extractor:
         dfs = pd.read_html(str(result_soup))
 
         # merge all data into one dataframe
-        return pd.concat(dfs)
+        df = pd.concat(dfs)
+
+        # add course title
+        df["Course Title"] = self.soup.title.string
+
+        return df
 
     def compile_df(self) -> pd.DataFrame:
         """Returns a list of two dataframes, the first containing the course details and the second containing the class details.
@@ -183,9 +188,6 @@ class Extractor:
         start_ind = href.find("add=") + 4
         end_ind = href.find("&", start_ind)
         course_id = href[start_ind:end_ind]
-
-        course_df.columns.append(pd.Index(["Course ID"]))
-        class_df.columns.append(pd.Index(["Course ID"]))
 
         course_df["Course ID"] = course_id
         class_df["Course ID"] = course_id
