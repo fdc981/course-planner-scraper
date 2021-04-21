@@ -4,7 +4,6 @@ import bs4
 import requests
 import re
 import datetime
-import os
 import pathlib
 from requests_wrapper import get
 
