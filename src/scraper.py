@@ -14,7 +14,7 @@ class Scraper:
 
     def scrape_url(self, url : str, dir_name : str):
         """Retrieves a page from the course planner, storing it in a file under data/."""
-        course_page = get(url)
+        course_page = get(url, 5, True)
         course_page_soup = bs4.BeautifulSoup(course_page.text, features="lxml")
         course_id = url.split('=')[-1]
         course_title = course_page_soup.title.text.replace('/', '-')
@@ -35,7 +35,7 @@ class Scraper:
 
     def get_course_list(self, year_to_retrieve : int = datetime.date.today().year):
         """Obtains a list of URLs pointing to the pages of every course accessible in the course planner."""
-        search_page_html = get('https://access.adelaide.edu.au/courses/search.asp')
+        search_page_html = get('https://access.adelaide.edu.au/courses/search.asp', 5, True)
         search_page_soup = bs4.BeautifulSoup(search_page_html.text, features="lxml")
 
         # get list of subject areas from dropdown box
@@ -56,7 +56,7 @@ class Scraper:
             print("Scraping:", subject_area)
 
             course_listing_link = "https://access.adelaide.edu.au/courses/search.asp?year=%s&m=r&title=&subject=%s&catalogue=&action=Search&term=&career=&campus=&class=&sort=" % (str(year_to_retrieve), subject_area)
-            course_listing_page = get(course_listing_link)
+            course_listing_page = get(course_listing_link, 5, True)
             course_listing_soup = bs4.BeautifulSoup(course_listing_page.text, features="lxml")
 
             for link in course_listing_soup.find_all('a', href=re.compile(r'details')):
