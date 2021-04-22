@@ -4,7 +4,8 @@ import re
 import pandas as pd
 
 def validate_html(soup) -> bool:
-    """Checks that all required data is within the given soup of the course planner page"""
+    """Checks that all required data is within the given soup of the course planner page.
+    Outputs warning messages."""
     test_passed = True
 
     course_details_table = soup.find("div", {"id" : "hidedata01_1"})
@@ -33,8 +34,5 @@ def validate_html(soup) -> bool:
     if footer == None:
         test_passed = False
         print("** Warning: missing footer")
-
-    if not test_passed:
-        x = input("Press enter to continue...")
 
     return test_passed
