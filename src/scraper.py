@@ -14,20 +14,23 @@ class Scraper:
 
     def scrape_url(self, url : str, dir_name : str):
         """Retrieves a page from the course planner, storing it in a file under data/."""
-        course_page = get(url, 5, True)
-        course_page_soup = bs4.BeautifulSoup(course_page.text, features="lxml")
-        course_id = url.split('=')[-1]
-        course_title = course_page_soup.title.text.replace('/', '-')
+        while True:
+            course_page = get(url, 5, True)
+            course_page_soup = bs4.BeautifulSoup(course_page.text, features="lxml")
+            course_id = url.split('=')[-1]
+            course_title = course_page_soup.title.text.replace('/', '-')
 
-        print("Scraping:", course_title, "-", course_id)
+            print("Scraping:", course_title, "-", course_id)
 
-        course_page_source = str(course_page_soup)
+            course_page_source = str(course_page_soup)
 
-        if not validate_html(course_page_soup):
-            print("** Warning: data may be missing for", course_title, "with url", url)
-            x = input("Repeat this scrape [Y/n]? ")
-            if x.lower() != "n":
-                self.scrape_url(url, dir_name)
+            if not validate_html(course_page_soup):
+                print("** Warning: data may be missing for", course_title, "with url", url)
+                x = input("Repeat this scrape [Y/n]? ")
+                if x.lower() == "n":
+                    break
+            else:
+                break
 
         html_file = open(dir_name + '/' + course_title + " - " + course_id + ".html", 'w')
         html_file.write(course_page_source)
