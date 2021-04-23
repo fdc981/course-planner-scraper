@@ -8,7 +8,7 @@ class TestSnapshotDataValidity(unittest.TestCase):
     def test_specific_invalid_pages(self):
         filename = "data/snapshots/MATHS - Mathematical Sciences/2021-04-22/500 - Internal server error. - 110010+1+4120+1.html"
         with open(filename) as page:
-            soup = bs4.beautifulSoup(page.read(), features="lxml")
+            soup = bs4.BeautifulSoup(page.read(), features="lxml")
             self.assertFalse(validate_html(soup))
 
     def test_all_pages_are_valid(self):
