@@ -41,7 +41,7 @@ class Scraper:
                     continue
 
     def scrape_url(self, url : str, dir_name : str):
-        """Retrieves a page from the course planner, storing it in a file under data/."""
+        """Retrieves a page from the course planner, storing it in a file under dir_name."""
         while True:
             course_page = self.get(url, 5, True)
             course_page_soup = bs4.BeautifulSoup(course_page.text, features="lxml")
