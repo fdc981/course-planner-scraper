@@ -5,7 +5,7 @@ import datetime
 import pathlib
 from src.requests_wrapper import get
 import os
-from src.verify import validate_html
+from tests.scraper import validate_html
 
 
 class Scraper:

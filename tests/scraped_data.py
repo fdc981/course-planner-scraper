@@ -2,7 +2,7 @@ import unittest
 import bs4
 import datetime
 from pathlib import Path
-from src.verify import validate_html
+from tests.scraper import validate_html
 
 class TestSnapshotDataValidity(unittest.TestCase):
     def test_specific_invalid_pages(self):
