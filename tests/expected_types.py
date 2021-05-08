@@ -1,0 +1,41 @@
+class_col_types = {
+    "Class Nbr" : range(30000),
+    "Section" : str,
+    "Size" : str,
+    "Available" : str,
+    "Dates" : str,
+    "Days" : str,
+    "Time" : str,
+    "Location" : str,
+    "Class Type" : str,
+    "Group" : str,
+    "Note" : str,
+    "Subject Area" : str,
+    "Catalogue Number" : str,
+    "Course Title" : str,
+    "Course ID" : str
+}
+
+course_col_types = {
+    "Career" : str,
+    "Units" : str,
+    "Term" : str,
+    "Campus" : str,
+    "Contact" : str,
+    "Restriction" : str,
+    "Available for Study Abroad and Exchange" : str,
+    "Available for Non-Award Study" : str,
+    "Pre-Requisite" : str,
+    "Assessment" : str,
+    "Syllabus" : str,
+    "Course ID" : str,
+    "Co-Requisite" : str,
+    "Discovery Experience â Global" : str,
+    "Discovery Experience â Working" : str,
+    "Assumed Knowledge" : str,
+    "Incompatible" : str,
+    "Session" : str,
+    "Quota" : str,
+    "Discovery Experience â Community" : str,
+    "Biennial Course" : str
+}

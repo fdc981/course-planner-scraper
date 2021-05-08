@@ -2,6 +2,7 @@
 
 import pandas as pd
 import bs4
+import tests.expected_types as expected
 
 class Extractor:
     """Extracts data from a course planner HTML file."""
@@ -28,6 +29,13 @@ class Extractor:
         """Determines the given element is a header containing the column names of the table"""
         attrs = elem_soup.attrs
         return "class" in attrs and attrs["class"] == ["trheader"]
+
+    def __sanitise(self, df : pd.DataFrame) -> None:
+        """Checks whether the input dataframe passes tests"""
+        # check for foreign columns
+        for col in df.columns:
+            if col not in expected.class_col_types:
+                raise Exception(f"Unexpected column {col}.")
 
     def course_details_as_df(self) -> pd.DataFrame:
         """Return the course details table as a dataframe."""
@@ -166,6 +174,9 @@ class Extractor:
             tc[1].append(note_tag)
 
         dfs = pd.read_html(str(result_soup))
+
+        for df in dfs:
+            self.__sanitise(df)
 
         # merge all data into one dataframe
         df = pd.concat(dfs)
