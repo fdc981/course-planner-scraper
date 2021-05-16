@@ -1,5 +1,3 @@
-# Functions that
-
 import pandas as pd
 import bs4
 import tests.expected_types as expected
