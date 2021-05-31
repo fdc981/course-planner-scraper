@@ -97,7 +97,7 @@ class Extractor:
             # check whether there are no rows of information in the table
             if len(tc) == 1:
                 print("** Warning: table has no contents, skipping")
-                break
+                continue
 
             # find the position of the <tr class="trheader"> tag
             trheader_index = 0
@@ -118,6 +118,10 @@ class Extractor:
                 group = tc[trheader_index - 2].get_text() # carries through iterations
                 del tc[1]
             del tc[0]
+
+            if len(tc) == 1:
+                print("** Warning: table has no rows, skipping")
+                continue
 
             extra_data["Group"] = group
 
