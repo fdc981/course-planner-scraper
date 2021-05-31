@@ -87,12 +87,17 @@ class Extractor:
             start = i
 
         self.result = result
+        result_soup = bs4.BeautifulSoup(result, features="lxml")
 
         # collapse all group and class type data into each subtable
-        result_soup = bs4.BeautifulSoup(result, features="lxml")
         group = "" # allow group data to carry through iterations
         for table in result_soup.find_all("table"):
             tc = table.contents
+
+            # check whether there are no rows of information in the table
+            if len(tc) == 1:
+                print("** Warning: table has no contents, skipping")
+                break
 
             # find the position of the <tr class="trheader"> tag
             trheader_index = 0
@@ -104,72 +109,64 @@ class Extractor:
             elif trheader_index < 1:
                 raise Exception("Missing class type data from class details subtable.")
 
-            class_type = tc[trheader_index - 1].string
+
+            extra_data = {}
+
+            extra_data["Class Type"] = tc[trheader_index - 1].string
 
             if trheader_index > 1:
-                group = tc[trheader_index - 2].get_text()
+                group = tc[trheader_index - 2].get_text() # carries through iterations
                 del tc[1]
-
             del tc[0]
+
+            extra_data["Group"] = group
 
             if not self.__is_class_data_header(tc[0]):
                 raise Exception("First element is not class data header")
 
-            if tc[-1].get_text().find("Note:") != -1:
-                note = tc[-1].get_text()
-                del tc[-1]
-            else:
-                note = ""
 
-            # append extra headers to trheader
-            class_type_header = result_soup.new_tag("th")
-            class_type_header.string = "Class Type"
+            extra_data["Note"] = []
 
-            group_header = result_soup.new_tag("th")
-            group_header.string = "Group"
+            i = 0
+            past_data_tag = None
+            # go through the table and collect notes, decreasing rowspan where appropriate.
+            while i != len(tc):
+                if "class" in tc[i].attrs and tc[i].attrs["class"] == ["data"]:
+                    past_data_tag = tc[i]
+                    i += 1
+                elif tc[i].get_text().find("Note") != -1:
+                    extra_data["Note"].append(tc[i].get_text())
 
-            note_header = result_soup.new_tag("th")
-            note_header.string = "Note"
+                    for tag in past_data_tag.find_all("td"):
+                        if "rowspan" in tag.attrs:
+                            tag.attrs["rowspan"] = int(tag.attrs["rowspan"]) - 1
 
-            tc[0].append(class_type_header)
-            tc[0].append(group_header)
-            tc[0].append(note_header)
+                    del tc[i]
+                else:
+                    i += 1
 
-            # check whether there are no rows of information in the table
-            if len(tc) == 1:
-                print("** Warning: table has no contents, skipping")
-                break;
+            extra_data["Note"] = str(extra_data["Note"])
 
-            rowspan_tag = tc[1].find("td", {"rowspan" : True})
-            if rowspan_tag == None:
-                print("** Warning: unable to find tag containg rowspan, setting rowspan = 1")
-                rowspan = 1
-            else:
-                rowspan = int(rowspan_tag.attrs["rowspan"])
+            # Currently: this rowspan is not accurate. Sometimes the tables can span many, many rows, and some cells may have rowspan < true number of rows in table.
+            rowspan = len(tc) - 1
+            for el in tc[1].find_all("td", {"rowspan" : rowspan}):
+                el["rowspan"] = rowspan
 
-            # if note exists
-            if note != "":
-                # exclude an extra row
-                for el in tc[1].find_all("td", {"rowspan" : rowspan}):
-                    el["rowspan"] = int(el["rowspan"]) - 1
-                rowspan -= 1
+            # check whether newly formed table is of correct length
+            assert len(table.contents) == rowspan+1, f"Expected table length {rowspan+1}; got {len(table.contents)}."
 
-            # insert extra data into <tr class="data">
-            class_type_tag = result_soup.new_tag("td")
-            class_type_tag.attrs = {"class" : "odd", "rowspan" : rowspan}
-            class_type_tag.string = class_type
+            # append all the extra data as additional columns
+            for name in extra_data:
+                header_tag = result_soup.new_tag("th")
+                header_tag.string = name
+                tc[0].append(header_tag)
 
-            group_tag = result_soup.new_tag("td")
-            group_tag.attrs = {"class" : "odd", "rowspan" : rowspan}
-            group_tag.string = group
+                container_tag = result_soup.new_tag("td")
+                container_tag.attrs = {"class" : "odd", "rowspan" : rowspan}
+                container_tag.string = extra_data[name]
+                tc[1].append(container_tag)
 
-            note_tag = result_soup.new_tag("td")
-            note_tag.attrs = {"class" : "odd", "rowspan" : rowspan}
-            note_tag.string = note
-
-            tc[1].append(class_type_tag)
-            tc[1].append(group_tag)
-            tc[1].append(note_tag)
+        #print(result_soup)
 
         dfs = pd.read_html(str(result_soup))
 
