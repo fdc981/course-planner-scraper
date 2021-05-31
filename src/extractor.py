@@ -149,11 +149,6 @@ class Extractor:
 
             # Currently: this rowspan is not accurate. Sometimes the tables can span many, many rows, and some cells may have rowspan < true number of rows in table.
             rowspan = len(tc) - 1
-            for el in tc[1].find_all("td", {"rowspan" : rowspan}):
-                el["rowspan"] = rowspan
-
-            # check whether newly formed table is of correct length
-            assert len(table.contents) == rowspan+1, f"Expected table length {rowspan+1}; got {len(table.contents)}."
 
             # append all the extra data as additional columns
             for name in extra_data:
@@ -165,8 +160,6 @@ class Extractor:
                 container_tag.attrs = {"class" : "odd", "rowspan" : rowspan}
                 container_tag.string = extra_data[name]
                 tc[1].append(container_tag)
-
-        #print(result_soup)
 
         dfs = pd.read_html(str(result_soup))
 
