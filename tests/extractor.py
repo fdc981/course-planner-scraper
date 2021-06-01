@@ -50,5 +50,13 @@ class TestExtractorMethods(unittest.TestCase):
             y = e.class_details_as_df()
             z = e.compile_df()
 
+    def test_page_with_topic_annotation(self):
+        filename = "data/snapshots/APP MTH - Applied Mathematics/2021-05-15/APP MTH 7048 - Applied Mathematics Topic A - 008510+1+4110+1.html"
+        with open(filename, 'r') as f:
+            e = Extractor(f.read())
+            x = e.course_details_as_df()
+            y = e.class_details_as_df()
+            z = e.compile_df()
+
 if __name__ == "__main__":
     unittest.main()
