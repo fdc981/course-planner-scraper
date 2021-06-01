@@ -1,6 +1,7 @@
 import pandas as pd
 import bs4
 import tests.expected_types as expected
+import re
 
 class Extractor:
     """Extracts data from a course planner HTML file."""
@@ -129,7 +130,7 @@ class Extractor:
                 raise Exception("First element is not class data header")
 
 
-            extra_data["Note"] = []
+            extra_data["Annotation"] = []
 
             i = 0
             past_data_tag = None
@@ -138,9 +139,8 @@ class Extractor:
                 if "class" in tc[i].attrs and tc[i].attrs["class"] == ["data"]:
                     past_data_tag = tc[i]
                     i += 1
-                elif tc[i].get_text().find("Note") != -1:
-                    extra_data["Note"].append(tc[i].get_text())
-
+                elif re.search(r"Note|Topic|Warning", tc[i].get_text()):
+                    extra_data["Annotation"].append(tc[i].get_text())
                     for tag in past_data_tag.find_all("td"):
                         if "rowspan" in tag.attrs:
                             tag.attrs["rowspan"] = int(tag.attrs["rowspan"]) - 1
@@ -149,7 +149,7 @@ class Extractor:
                 else:
                     i += 1
 
-            extra_data["Note"] = str(extra_data["Note"])
+            extra_data["Annotation"] = str(extra_data["Annotation"])
 
             # Currently: this rowspan is not accurate. Sometimes the tables can span many, many rows, and some cells may have rowspan < true number of rows in table.
             rowspan = len(tc) - 1
