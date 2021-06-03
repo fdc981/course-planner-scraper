@@ -33,8 +33,15 @@ class Extractor:
         """Checks whether the input dataframe passes tests"""
         # check for foreign columns
         for col in df.columns:
-            if col not in expected.class_col_types:
-                raise Exception(f"Unexpected column {col}.")
+            assert col in expected.class_col_types, f"Unexpected column {col}."
+
+        for col in [col for col in expected.class_col_types if col in df.columns]:
+            if expected.class_col_types[col] in [int, str]:
+               for el in df[col]:
+                    assert type(el) == expected.class_col_types[col], f"Element `{el}` with type {type(el)} of column {col} is not of type {expected.class_col_types[col]}."
+            else:
+                for el in df[col]:
+                    assert el in expected.class_col_types[col], f"Element `{el}` of column {col} is not any of the elements {expected.class_col_types[col]}."
 
     def course_details_as_df(self) -> pd.DataFrame:
         """Return the course details table as a dataframe."""
