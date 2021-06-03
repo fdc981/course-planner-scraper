@@ -42,7 +42,8 @@ class TestExtractorMethods(unittest.TestCase):
             y = e.class_details_as_df()
             z = e.compile_df()
 
-    def test_page_with_empty_column(self):
+    def test_page_with_multiple_annotations_within_table_rows(self):
+        # note: column 'Location' contains empty data
         filename = "data/snapshots/ANIML SC - Animal Science/2021-05-15/ANIML SC 1015RW - Animal Handling & Husbandry I - 104099+1+4110+1.html"
         with open(filename, 'r') as f:
             e = Extractor(f.read())
