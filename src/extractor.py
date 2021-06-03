@@ -98,7 +98,7 @@ class Extractor:
         result_soup = bs4.BeautifulSoup(result, features="lxml")
 
         # collapse all group and class type data into each subtable
-        group = "" # allow group data to carry through iterations
+        group = "none" # allow group data to carry through iterations
         for table in result_soup.find_all("table"):
             tc = table.contents
 
@@ -174,7 +174,13 @@ class Extractor:
 
         dfs = pd.read_html(str(result_soup))
 
+        # post-processing and sanitisation
         for df in dfs:
+            # change all entries in the "Available" column with value "FULL" to the maximum capacity of the class
+            df.loc[df["Available"] == "FULL", "Available"] = df.loc[df["Available"] == "FULL", "Size"]
+            df["Available"] = df["Available"].astype(int)
+            df["Location"] = df["Location"].astype(str)
+
             self.__sanitise(df)
 
         # merge all data into one dataframe
