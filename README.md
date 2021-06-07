@@ -3,10 +3,10 @@ course-planner-scraper
 
 # Usage
 
-Running data compiler:
+Scrape and process data:
 
 ```sh
-python -m src.compile_data
+python main.py
 ```
 
 Running tests:
