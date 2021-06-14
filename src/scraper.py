@@ -26,6 +26,7 @@ class Scraper:
                 return res
             except BaseException as e:
                 if retry_time < 0:
+                    print('\a')
                     c = input("Requests ended with error: \"%s\". Try again [y/N]? " % str(e))
                     if c.lower() == 'y':
                         print("Continuing...")
@@ -53,6 +54,7 @@ class Scraper:
             course_page_source = str(course_page_soup)
 
             if not validate_html(course_page_soup):
+                print('\a')
                 print("** Warning: data may be missing for", course_title, "with url", url)
                 x = input("Repeat this scrape [Y/n]? ")
                 if x.lower() == "n":
