@@ -3,9 +3,9 @@ class_col_types = {
     "Section" : str,
     "Size" : int,
     "Available" : int,
-    "Dates" : str, # could add some parsing?
-    "Days" : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-    "Time" : str, # could add some parsing?
+    "Dates" : str, # could add some parsing? possible value "no schedule"
+    "Days" : ["No schedule", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "Time" : str, # could add some parsing? possible value "no schedule"
     "Location" : str,
     "Class Type" : str,
     "Group" : ["none", "Group One", "Group Two", "Group Three", "Group Four", "Group Five", "Group Six", "Group Seven", "Group Eight", "Group Nine", "Group Ten", "Group Eleven", "Group Twelve", "Group Thirteen", "Group Fourteen", "Group Fifteen"],
