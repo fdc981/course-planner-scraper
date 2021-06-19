@@ -63,6 +63,13 @@ class Extractor:
             wrapper.attrs = {"class" : "note"}
             td.wrap(wrapper)
 
+        # check whether class does not have any timetabled face-to-face sessions
+        no_face_to_face_tags = self.class_details.table.find_all("td", attrs={"colspan": "4"})
+        if len(no_face_to_face_tags) != 0:
+            print(f"** Warning: table has classes with {len(no_face_to_face_tags)} no face to face sessions")
+            for tag in no_face_to_face_tags:
+                tag.string = "No schedule"
+
         # Split the html up.
 
         # ensure no `NavigableString`s are present
@@ -102,12 +109,6 @@ class Extractor:
             if len(tc) == 1:
                 print("** Warning: table has no contents, skipping")
                 continue
-
-            # check whether class does not have any timetabled face-to-face sessions
-            no_face_to_face_tag = tc[2].find("td", attrs={"colspan": "4"})
-            if no_face_to_face_tag:
-                print("** Warning: class has no face to face sessions")
-                no_face_to_face_tag.string = "No schedule"
 
             # find the position of the <tr class="trheader"> tag
             trheader_index = 0
