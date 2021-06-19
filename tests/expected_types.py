@@ -16,15 +16,17 @@ class_type = r"(Studio|Seminar|Project|Technique/Repertoire|Clinical|Performance
 
 english_numeral = r"(One|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Eleven|Twelve|Thirteen|Fourteen|Fifteen|Sixteen|Seventeen|Eighteen|Nineteen|Twenty)"
 
+day_of_the_week = "(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)"
+
 course_id_regex = r"^([01]{2}[0-9]{4}+1+[0-9]{4}+())$" # note: currently broken
 
 class_col_types = {
     "Class Nbr" : r"^([1-9][0-9]{4})$",
-    "Section" : r"^([0-9]{2}[A-Z]{2}|[A-Z]{2}[0-9]{2}|LEC[0-9])$",
+    "Section" : r"^([0-9]{2}[A-Z]{2}|[A-Z]{2}[0-9]{2}|LEC[0-9]|WRK[0-9])$",
     "Size" : r"^(0|[1-9][0-9]*)$",
     "Available" : r"^(0|[1-9][0-9]*)$",
     "Dates" : f"^(No schedule|({date} {short_month} - {date} {short_month}))$",
-    "Days" : r"^(No schedule|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)$",
+    "Days" : f"^(No schedule|({day_of_the_week}(, {day_of_the_week})*))$",
     "Time" : f"^(No schedule|{time_12hr} - {time_12hr})$",
     "Location" : r"^.*$", # not sure how to parse
     "Class Type" : f"^(((Automatic )?Enrolment|Related) Class: {class_type})$",
