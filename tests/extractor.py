@@ -19,6 +19,7 @@ class TestExtractorMethods(unittest.TestCase):
             z = e.compile_df()
 
     def test_page_with_single_row_of_class_details(self):
+        # note: also contains "Days" entries with multiple days listed (instead of having just one)
         filename = "data/snapshots/ORALHLTH - Oral Health/2021-04-16/ORALHLTH 3201AHO - Dental & Health Science IIIOH Part 1 - 101509+1+4110+FY1.html"
         with open(filename, 'r') as f:
             e = Extractor(f.read())
@@ -61,6 +62,14 @@ class TestExtractorMethods(unittest.TestCase):
 
     def test_page_with_no_timetabled_face_to_face_sections(self):
         filename = "data/snapshots/PPE - Philosophy, Politics & Econ/2021-06-03/PPE 2002 - Foundations of Public Policy - 110079+1+4110+1.html"
+        with open(filename, 'r') as f:
+            e = Extractor(f.read())
+            x = e.course_details_as_df()
+            y = e.class_details_as_df()
+            z = e.compile_df()
+
+    def test_page_with_no_timetabled_face_to_face_sessions_in_middle_of_table(self):
+        filename = "data/snapshots/FREN - French/2021-06-01/FREN 1003 - French IB: Beginners' French - 001962+1+4120+1.html"
         with open(filename, 'r') as f:
             e = Extractor(f.read())
             x = e.course_details_as_df()

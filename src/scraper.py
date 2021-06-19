@@ -22,7 +22,7 @@ class Scraper:
         double_time : if true and retry_time is nonnegative, doubles retry_time after each retry"""
         while True:
             try:
-                res = requests.get(url)
+                res = requests.get(url, timeout=60)
                 return res
             except BaseException as e:
                 if retry_time < 0:
