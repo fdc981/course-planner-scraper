@@ -35,7 +35,7 @@ class Extractor:
         for col in df.columns:
             assert col in expected.class_col_types, f"Unexpected column {col}."
 
-        for col in [col for col in expected.class_col_types if col in df.columns]:
+        for col in df.columns:
             if expected.class_col_types[col] in [int, str]:
                for el in df[col]:
                     assert type(el) == expected.class_col_types[col], f"Element `{el}` with type {type(el)} of column {col} is not of type {expected.class_col_types[col]}."
