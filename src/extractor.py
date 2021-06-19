@@ -30,18 +30,14 @@ class Extractor:
         return "class" in attrs and attrs["class"] == ["trheader"]
 
     def __sanitise(self, df : pd.DataFrame) -> None:
-        """Checks whether the input dataframe passes tests"""
+        """Checks whether the input class detail dataframe passes tests"""
         # check for foreign columns
         for col in df.columns:
             assert col in expected.class_col_types, f"Unexpected column {col}."
 
         for col in df.columns:
-            if expected.class_col_types[col] in [int, str]:
-               for el in df[col]:
-                    assert type(el) == expected.class_col_types[col], f"Element `{el}` with type {type(el)} of column {col} is not of type {expected.class_col_types[col]}."
-            else:
-                for el in df[col]:
-                    assert el in expected.class_col_types[col], f"Element `{el}` of column {col} is not any of the elements {expected.class_col_types[col]}."
+            for el in df[col]:
+                assert re.match(expected.class_col_types[col], str(el)), f"Element `{el}` with type {type(el)} of column {col} did not pass regex test {expected.class_col_types[col]}."
 
     def course_details_as_df(self) -> pd.DataFrame:
         """Return the course details table as a dataframe."""
