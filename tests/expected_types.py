@@ -46,21 +46,21 @@ course_col_types = {
     "Units" : {0.0, 1.5, 2.0, 3.0, 4.0, 4.5, 6.0, 7.5, 3.75, 9.0, 1.0, 10.0, 12.0, 8.0},
     "Term" : "^(Term 1|Trimester 1|Online Teaching Period 4|Trimester 3|Term 2|Online Teaching Period 6|Melb Teaching Period 1|Melb Teaching Period 3|Semester 1|Winter School|Term 3|Online Teaching Period 3|Summer School|Trimester 2|Online Teaching Period 2|Melb Teaching Period 2|Online Teaching Period 1|Semester 2|Online Teaching Period 5|Term 4)$",
     "Campus" : "^(UofA College Melbourne|Waite|External|National Wine Centre|Online|University of Adelaide College|Teaching Hospitals|North Terrace|Adelaide College of ArtsandDes|Ngee Ann Academy|Flinders University|Regency Park|Melbourne|Roseworthy)$",
-    "Contact" : str,
-    "Restriction" : str,
+    "Contact" : r"^.*$", # not sure how to parse
+    "Restriction" : r"^.*$", # not sure how to parse
     "Available for Study Abroad and Exchange" : "^(Yes|No)$",
     "Available for Non-Award Study" : "^(Yes|Check with School|No)$",
-    "Pre-Requisite" : str,
-    "Assessment" : str,
-    "Syllabus" : str,
+    "Pre-Requisite" : r"^.*$", # not sure how to parse
+    "Assessment" : r"^.*$", # not sure how to parse
+    "Syllabus" : r"^.*$", # not sure how to parse
     "Course ID" : course_id_regex,
-    "Co-Requisite" : str,
+    "Co-Requisite" : r"^.*$", # not sure how to parse
     "Discovery Experience â Global" : "^(nan|Yes)$",
     "Discovery Experience â Working" : "^(nan|Yes)$",
-    "Assumed Knowledge" : str,
-    "Incompatible" : str,
+    "Assumed Knowledge" : r"^.*$", # not sure how to parse
+    "Incompatible" : r"^.*$", # not sure how to parse
     "Session" : "^(Half Year Part 1|Winter Session 1|Half Year Part 2|Late Add Session|Summer Session 4|Summer Session 2|Summer Session 1|Summer Session 3|Remedial Course)$",
-    "Quota" : str,
+    "Quota" : r"^.*$", # not sure how to parse
     "Discovery Experience â Community" : "^(nan|Yes)$",
     "Biennial Course" : "^(nan|Course offered in odd years)$"
 }
