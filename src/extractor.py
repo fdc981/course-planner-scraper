@@ -110,13 +110,6 @@ class Extractor:
                 print("** Warning: table has no contents, skipping")
                 continue
 
-            # check whether class does not have any timetabled face-to-face sessions
-            no_face_to_face_tag = tc[2].find("td", attrs={"colspan": "4"})
-            print("no_face_to_face_tag:", no_face_to_face_tag)
-            if no_face_to_face_tag:
-                print("** Warning: course has no face to face sessions")
-                no_face_to_face_tag.string = "No schedule"
-
             # find the position of the <tr class="trheader"> tag
             trheader_index = 0
             while not self.__is_class_data_header(tc[trheader_index]):
