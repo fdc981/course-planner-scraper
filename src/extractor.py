@@ -39,38 +39,8 @@ class Extractor:
             for el in df[col]:
                 assert re.match(expected.class_col_types[col], str(el)), f"Element `{el}` with type {type(el)} of column {col} did not pass regex test {expected.class_col_types[col]}."
 
-    def course_details_as_df(self) -> pd.DataFrame:
-        """Return the course details table as a dataframe."""
-        dfs = pd.read_html(str(self.course_details), index_col = 0)
-
-        assert len(dfs) == 1, "Unexpected size of table while parsing: len(dfs) == %d != 1" % len(dfs)
-
-        df = dfs[0]
-        df.index = [ind.replace(':', '') for ind in df.index]
-
-        return df.transpose()
-
-    def class_details_as_df(self) -> pd.DataFrame:
-        """Return the class details tables as a single dataframe."""
-        # check whether there are no class details
-        if self.class_details == None:
-            return pd.DataFrame()
-
-        # wrap all immediate <td>s in the <table> with <tr>
-        tds = self.class_details.table.find_all("td", recursive=False)
-        for td in tds:
-            wrapper = self.soup.new_tag("tr")
-            wrapper.attrs = {"class" : "note"}
-            td.wrap(wrapper)
-
-        # check whether class does not have any timetabled face-to-face sessions
-        no_face_to_face_tags = self.class_details.table.find_all("td", attrs={"colspan": "4"})
-        if len(no_face_to_face_tags) != 0:
-            print(f"** Warning: table has classes with {len(no_face_to_face_tags)} no face to face sessions")
-            for tag in no_face_to_face_tags:
-                tag.string = "No schedule"
-
-        # Split the html up.
+    def __split_html(self):
+        """Splits the html of self.class_details up, storing the result in self.result."""
 
         # ensure no `NavigableString`s are present
         table_soup = self.class_details.table.find_all("tr", recursive=False)
@@ -98,9 +68,10 @@ class Extractor:
             start = i
 
         self.result = result
-        result_soup = bs4.BeautifulSoup(result, features="lxml")
 
-        # collapse all group and class type data into each subtable
+    def __collapse_data(self, result_soup):
+        """For each subtable in result_soup, collapses all group and class type data."""
+
         group = "none" # allow group data to carry through iterations
         for table in result_soup.find_all("table"):
             tc = table.contents
@@ -174,6 +145,44 @@ class Extractor:
                 container_tag.attrs = {"class" : "odd", "rowspan" : rowspan}
                 container_tag.string = extra_data[name]
                 tc[1].append(container_tag)
+
+
+    def course_details_as_df(self) -> pd.DataFrame:
+        """Return the course details table as a dataframe."""
+        dfs = pd.read_html(str(self.course_details), index_col = 0)
+
+        assert len(dfs) == 1, "Unexpected size of table while parsing: len(dfs) == %d != 1" % len(dfs)
+
+        df = dfs[0]
+        df.index = [ind.replace(':', '') for ind in df.index]
+
+        return df.transpose()
+
+    def class_details_as_df(self) -> pd.DataFrame:
+        """Return the class details tables as a single dataframe."""
+        # check whether there are no class details
+        if self.class_details == None:
+            return pd.DataFrame()
+
+        # wrap all immediate <td>s in the <table> with <tr>
+        tds = self.class_details.table.find_all("td", recursive=False)
+        for td in tds:
+            wrapper = self.soup.new_tag("tr")
+            wrapper.attrs = {"class" : "note"}
+            td.wrap(wrapper)
+
+        # check whether class does not have any timetabled face-to-face sessions
+        no_face_to_face_tags = self.class_details.table.find_all("td", attrs={"colspan": "4"})
+        if len(no_face_to_face_tags) != 0:
+            print(f"** Warning: table has classes with {len(no_face_to_face_tags)} no face to face sessions")
+            for tag in no_face_to_face_tags:
+                tag.string = "No schedule"
+
+        self.__split_html()
+
+        result_soup = bs4.BeautifulSoup(self.result, features="lxml")
+
+        self.__collapse_data(result_soup)
 
         dfs = pd.read_html(str(result_soup))
 
