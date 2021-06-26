@@ -11,6 +11,7 @@ from tests.scraper import validate_html
 
 class Scraper:
     def __init__(self):
+        self.count = 1
         pass
 
     def get(self, url : str, retry_time : int = -1, double_time : bool = False) -> str:
@@ -49,7 +50,7 @@ class Scraper:
             course_id = url.split('=')[-1]
             course_title = course_page_soup.title.text.replace('/', '-')
 
-            print("Scraping:", course_title, "-", course_id)
+            print(f"({self.count}) Scraping:", course_title, "-", course_id)
 
             course_page_source = str(course_page_soup)
 
@@ -65,6 +66,8 @@ class Scraper:
         html_file = open(dir_name + '/' + course_title + " - " + course_id + ".html", 'w')
         html_file.write(course_page_source)
         html_file.close()
+
+        self.count += 1
 
     def get_course_list(self, year_to_retrieve : int = datetime.date.today().year):
         """Obtains a list of URLs pointing to the pages of every course accessible in the course planner."""
