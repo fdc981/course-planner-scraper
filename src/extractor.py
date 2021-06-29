@@ -178,6 +178,12 @@ class Extractor:
             for tag in no_face_to_face_tags:
                 tag.string = "No schedule"
 
+        # fill empty <td class="odd"> with "no schedule"
+        for td in self.class_details.table.find_all("td", attrs={"class": ["odd"]}):
+            text = td.get_text().strip()
+            if text == "" or text == "-":
+                td.string = "No schedule"
+
         self.__split_html()
 
         result_soup = bs4.BeautifulSoup(self.result, features="lxml")
