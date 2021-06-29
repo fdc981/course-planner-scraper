@@ -84,6 +84,14 @@ class TestExtractorMethods(unittest.TestCase):
             y = e.class_details_as_df()
             z = e.compile_df()
 
+    def test_page_with_no_size_available_data(self):
+        filename = "data/snapshots/MGRE - Modern Greek/2021-06-29/MGRE 3304 - Advanced Language for Translation - 110349+1+4120+1.html"
+        with open(filename, 'r') as f:
+            e = Extractor(f.read())
+            x = e.course_details_as_df()
+            y = e.class_details_as_df()
+            z = e.compile_df()
+
 
 if __name__ == "__main__":
     unittest.main()
