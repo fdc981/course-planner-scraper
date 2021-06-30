@@ -92,6 +92,14 @@ class TestExtractorMethods(unittest.TestCase):
             y = e.class_details_as_df()
             z = e.compile_df()
 
+    def test_page_with_two_warnings(self):
+        filename = "data/snapshots/ENG - Engineering/2021-06-08/ENG 1011UAC - Introduction to Engineering EAL - 109888+2+4120+1.html"
+        with open(filename, 'r') as f:
+            e = Extractor(f.read())
+            x = e.course_details_as_df()
+            y = e.class_details_as_df()
+            z = e.compile_df()
+
 
 if __name__ == "__main__":
     unittest.main()
