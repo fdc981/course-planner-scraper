@@ -23,11 +23,11 @@ course_id_regex = r"^([01]{2}[0-9]{4}+1+[0-9]{4}+())$" # note: currently broken
 class_col_types = {
     "Class Nbr" : r"^([1-9][0-9]{4})$",
     "Section" : r"^([0-9]{2}[A-Z]{2}|[A-Z]{2}[0-9]{2}|[A-Z]{3}[0-9]|TU0|WT|PF0)$",
-    "Size" : r"^(0|[1-9][0-9]*)$",
-    "Available" : r"^(0|[1-9][0-9]*)$",
-    "Dates" : f"^(No schedule|({date} {short_month} - {date} {short_month}))$",
-    "Days" : f"^(No schedule|({day_of_the_week}(, {day_of_the_week})*))$",
-    "Time" : f"^(No schedule|{time_12hr} - {time_12hr})$",
+    "Size" : r"^(none|0|[1-9][0-9]*)$",
+    "Available" : r"^(none|0|[1-9][0-9]*)$",
+    "Dates" : f"^(none|({date} {short_month} - {date} {short_month}))$",
+    "Days" : f"^(none|({day_of_the_week}(, {day_of_the_week})*))$",
+    "Time" : f"^(none|{time_12hr} - {time_12hr})$",
     "Location" : r"^.*$", # not sure how to parse
     "Class Type" : f"^(((Automatic )?Enrolment|Related) Class: {class_type})$",
     "Group" : f"^(none|(Group {english_numeral}))$",

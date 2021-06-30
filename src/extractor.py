@@ -176,13 +176,13 @@ class Extractor:
         if len(no_face_to_face_tags) != 0:
             print(f"** Warning: table has classes with {len(no_face_to_face_tags)} no face to face sessions")
             for tag in no_face_to_face_tags:
-                tag.string = "No schedule"
+                tag.string = "none"
 
-        # fill empty <td class="odd"> with "no schedule"
+        # fill empty <td class="odd"> with "N/A"
         for td in self.class_details.table.find_all("td", attrs={"class": ["odd"]}):
             text = td.get_text().strip()
             if text == "" or text == "-":
-                td.string = "No schedule"
+                td.string = "none"
 
         self.__split_html()
 
@@ -196,8 +196,6 @@ class Extractor:
         for df in dfs:
             # change all entries in the "Available" column with value "FULL" to the maximum capacity of the class
             df.loc[df["Available"] == "FULL", "Available"] = df.loc[df["Available"] == "FULL", "Size"]
-            df["Available"] = df["Available"].astype(int)
-            df["Location"] = df["Location"].astype(str)
 
             self.__sanitise(df)
 
