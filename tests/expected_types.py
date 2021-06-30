@@ -22,7 +22,7 @@ course_id_regex = r"^([01]{2}[0-9]{4}+1+[0-9]{4}+())$" # note: currently broken
 
 class_col_types = {
     "Class Nbr" : r"^([1-9][0-9]{4})$",
-    "Section" : r"^([0-9]{2}[A-Z]{2}|[A-Z]{2}[0-9]{2}|[A-Z]{3}[0-9]|TU0|WT|PF0)$",
+    "Section" : r"^([0-9]{2}[A-Z]{2}|[A-Z]{2}[0-9]{2}|[A-Z]{3}[0-9]|TU0|WT|PF0|TRF|THE|PR0)$",
     "Size" : r"^(none|0|[1-9][0-9]*)$",
     "Available" : r"^(none|0|[1-9][0-9]*)$",
     "Dates" : f"^(none|({date} {short_month} - {date} {short_month}))$",
