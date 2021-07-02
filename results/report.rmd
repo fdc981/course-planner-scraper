@@ -1,0 +1,49 @@
+---
+title: Assorted statistics for course planner
+output: pdf_document
+params:
+    date: !r as.character(Sys.Date())
+---
+
+```{r, echo=FALSE}
+library("tidyverse")
+
+courses = read.csv(paste("../data/compiled_data/course_details/", params$date, ".csv", sep=""))
+classes = read.csv(paste("../data/compiled_data/class_details/", params$date, ".csv", sep=""))
+```
+
+Number of courses: ``r nrow(courses)``.
+
+Number of classes: ``r nrow(classes)``.
+
+
+# Number of filled spots against maximum size/capacity of a class
+
+```{r, echo=FALSE}
+plot(classes$Size, classes$Available)
+```
+
+
+# Subject areas with most courses
+
+```{r, echo=FALSE}
+tbl = table(classes["Subject.Area"])
+tbl = tbl[order(-tbl)] # re-arrange frequencies in descending order
+
+g = ggplot(head(as.data.frame(tbl)), aes(x = Var1, y = Freq))
+g + geom_col() + theme(axis.title.x=element_blank(),
+                       axis.title.y=element_blank())
+```
+
+
+# Number of students attending each room
+
+```{r, echo=FALSE}
+tbl = table(classes["Location"])
+tbl = tbl[order(-tbl)] # re-arrange frequencies in descending order
+
+g = ggplot(head(as.data.frame(tbl)), aes(x = Freq, y = Var1))
+g + geom_col() + theme(axis.title.x=element_blank(),
+                       axis.title.y=element_blank())
+```
+
