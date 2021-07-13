@@ -43,7 +43,7 @@ class_col_types = {
 
 course_col_types = {
     "Career" : "^(Non-Award|Undergraduate|Undergraduate Law|PGRS|Postgraduate Coursework)$",
-    "Units" : {0.0, 1.5, 2.0, 3.0, 4.0, 4.5, 6.0, 7.5, 3.75, 9.0, 1.0, 10.0, 12.0, 8.0},
+    "Units" : "^(0|1.5|2|3|4|4.5|6|7.5|3.75|9|1|10|12|8)$",
     "Term" : "^(Term 1|Trimester 1|Online Teaching Period 4|Trimester 3|Term 2|Online Teaching Period 6|Melb Teaching Period 1|Melb Teaching Period 3|Semester 1|Winter School|Term 3|Online Teaching Period 3|Summer School|Trimester 2|Online Teaching Period 2|Melb Teaching Period 2|Online Teaching Period 1|Semester 2|Online Teaching Period 5|Term 4)$",
     "Campus" : "^(UofA College Melbourne|Waite|External|National Wine Centre|Online|University of Adelaide College|Teaching Hospitals|North Terrace|Adelaide College of ArtsandDes|Ngee Ann Academy|Flinders University|Regency Park|Melbourne|Roseworthy)$",
     "Contact" : r"^.+$", # not sure how to parse
