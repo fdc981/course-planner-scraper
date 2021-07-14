@@ -24,9 +24,9 @@ def compile_data(date : str = str(datetime.date.today())):
             f.close()
             course_details, class_details = ex.compile_df()
 
-            # append to table
-            course_df = course_df.append(course_details)
-            class_df = class_df.append(class_details)
+            # append to table if not empty
+            if not course_details.empty: course_df = course_df.append(course_details)
+            if not class_details.empty: class_df = class_df.append(class_details)
 
     pathlib.Path("data/compiled_data/course_details/").mkdir(parents=True, exist_ok=True)
     pathlib.Path("data/compiled_data/class_details/").mkdir(parents=True, exist_ok=True)
