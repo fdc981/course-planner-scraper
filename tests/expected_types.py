@@ -48,19 +48,19 @@ course_col_types = {
     "Campus" : "^(UofA College Melbourne|Waite|External|National Wine Centre|Online|University of Adelaide College|Teaching Hospitals|North Terrace|Adelaide College of ArtsandDes|Ngee Ann Academy|Flinders University|Regency Park|Melbourne|Roseworthy)$",
     "Contact" : r"^.+$", # not sure how to parse
     "Restriction" : r"^.+$", # not sure how to parse
-    "Available for Study Abroad and Exchange" : "^(Yes|No)$",
-    "Available for Non-Award Study" : "^(Yes|Check with School|No)$",
+    "Available for Study Abroad and Exchange" : "^(none|Yes|No)$",
+    "Available for Non-Award Study" : "^(none|Yes|Check with School|No)$",
     "Pre-Requisite" : r"^.+$", # not sure how to parse
     "Assessment" : r"^.+$", # not sure how to parse
     "Syllabus" : r"^.+$", # not sure how to parse
     "Course ID" : course_id_regex,
     "Co-Requisite" : r"^.+$", # not sure how to parse
-    "Discovery Experience â Global" : "^(nan|Yes)$",
-    "Discovery Experience â Working" : "^(nan|Yes)$",
+    "Discovery Experience â Global" : "^(none|Yes)$",
+    "Discovery Experience â Working" : "^(none|Yes)$",
     "Assumed Knowledge" : r"^.+$", # not sure how to parse
     "Incompatible" : r"^.+$", # not sure how to parse
-    "Session" : "^(Half Year Part 1|Winter Session 1|Half Year Part 2|Late Add Session|Summer Session 4|Summer Session 2|Summer Session 1|Summer Session 3|Remedial Course)$",
+    "Session" : "^(none|Half Year Part 1|Winter Session 1|Half Year Part 2|Late Add Session|Summer Session 4|Summer Session 2|Summer Session 1|Summer Session 3|Remedial Course)$",
     "Quota" : r"^.+$", # not sure how to parse
-    "Discovery Experience â Community" : "^(nan|Yes)$",
-    "Biennial Course" : "^(nan|Course offered in odd years)$"
+    "Discovery Experience â Community" : "^(none|Yes)$",
+    "Biennial Course" : "^(none|Course offered in odd years)$"
 }

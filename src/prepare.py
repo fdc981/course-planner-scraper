@@ -31,5 +31,5 @@ def compile_data(date : str = str(datetime.date.today())):
     pathlib.Path("data/compiled_data/course_details/").mkdir(parents=True, exist_ok=True)
     pathlib.Path("data/compiled_data/class_details/").mkdir(parents=True, exist_ok=True)
 
-    course_df.to_csv("data/compiled_data/course_details/%s.csv" % date, index=False)
+    course_df.to_csv("data/compiled_data/course_details/%s.csv" % date, index=False, na_rep="none")
     class_df.to_csv("data/compiled_data/class_details/%s.csv" % date, index=False)
