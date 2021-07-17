@@ -10,9 +10,11 @@ from tests.scraper import validate_html
 
 
 class Scraper:
+
     def __init__(self):
         self.count = 1
         pass
+
 
     def get(self, url : str, retry_time : int = -1, double_time : bool = False) -> str:
         """Wrapper for requests.get which requests again upon failure.
@@ -41,6 +43,7 @@ class Scraper:
                     if double_time:
                         retry_time *= 2
                     continue
+
 
     def scrape_url(self, url : str, dir_name : str):
         """Retrieves a page from the course planner, storing it in a file under dir_name."""
@@ -102,6 +105,7 @@ class Scraper:
             f = open("%s/course_list_%s.txt" % (subject_dir, str(datetime.date.today())), 'w')
             f.write(course_list_txt)
             f.close()
+
 
     def get_courses_html(self):
         """Scrapes all webpages in the url provided by the list of course planner URLs."""

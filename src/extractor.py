@@ -11,23 +11,28 @@ class Extractor:
         self.course_details = self.soup.find("div", {"id": "hidedata01_1"})
         self.class_details = self.soup.find("div", {"id": "hidedata04_1"})
 
+
     def __is_group_header(self, elem_soup):
         """Determines the given element is a group header for the corresponding class details table"""
         attrs = elem_soup.attrs
         return "class" in attrs and attrs["class"] == ["trgroup"]
 
+
     def __is_class_type_header(self, elem_soup):
         """Determines the given element is a header indicating class type for the corresponding class details table"""
         return elem_soup.find("th", {"class" : "course", "colspan" : 8})
+
 
     def __is_start_of_class_subtable(self, elem_soup):
         """Determines whether an element is part of a subclass"""
         return self.__is_group_header(elem_soup) or self.__is_class_type_header(elem_soup)
 
+
     def __is_class_data_header(self, elem_soup):
         """Determines the given element is a header containing the column names of the table"""
         attrs = elem_soup.attrs
         return "class" in attrs and attrs["class"] == ["trheader"]
+
 
     def __sanitise(self, df : pd.DataFrame) -> None:
         """Checks whether the input class detail dataframe passes tests"""
@@ -38,6 +43,7 @@ class Extractor:
         for col in df.columns:
             for el in df[col]:
                 assert re.match(expected.class_col_types[col], str(el)), f"Element `{el}` with type {type(el)} of column {col} did not pass regex test {expected.class_col_types[col]}."
+
 
     def __split_html(self):
         """Splits the html of self.class_details up, storing the result in self.result."""
@@ -68,6 +74,7 @@ class Extractor:
             start = i
 
         self.result = result
+
 
     def __collapse_data(self, result_soup):
         """For each subtable in result_soup, collapses all group and class type data."""
@@ -158,6 +165,7 @@ class Extractor:
 
         return df.transpose()
 
+
     def class_details_as_df(self) -> pd.DataFrame:
         """Return the class details tables as a single dataframe."""
         # check whether there are no class details
@@ -209,6 +217,7 @@ class Extractor:
         df["Course Title"] = full_course_title[-1]
 
         return df
+
 
     def compile_df(self) -> pd.DataFrame:
         """Returns a list of two dataframes, the first containing the course details and the second containing the class details.
