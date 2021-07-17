@@ -162,8 +162,12 @@ class Extractor:
 
         df = dfs[0]
         df.index = [ind.replace(':', '') for ind in df.index]
+        df = df.transpose()
 
-        return df.transpose()
+        if "Biennial Course" in df.columns:
+            df.loc[df["Biennial Course"] == "Reflective Journal 30%, Portfolio 30%, Participation 10%, Teamwork 30%", ["Assessment", "Biennial Course"]] = ["Reflective Journal 30%, Portfolio 30%, Participation 10%, Teamwork 30%", 'none']
+
+        return df
 
 
     def class_details_as_df(self) -> pd.DataFrame:
