@@ -19,5 +19,5 @@ Compile the report for current date (requires `R` and the `rmarkdown` package to
 
 ``` bash
 cd results/
-R --vanilla <<< "rmarkdown::render('report.rmd')
+R --vanilla <<< "rmarkdown::render('report.rmd')"
 ```
