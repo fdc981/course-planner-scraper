@@ -44,6 +44,10 @@ class Extractor:
             for el in df[col]:
                 assert re.match(expected.class_col_types[col], str(el)), f"Element `{el}` with type {type(el)} of column {col} did not pass regex test {expected.class_col_types[col]}."
 
+        if df.isna().any(axis=None):
+            print(df[df.isna().any(axis=1)])
+            raise Exception("NaN values present in DataFrame (see above output)")
+
 
     def __split_html(self):
         """Splits the html of self.class_details up, storing the result in self.result."""
