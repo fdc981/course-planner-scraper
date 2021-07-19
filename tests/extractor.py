@@ -100,6 +100,14 @@ class TestExtractorMethods(unittest.TestCase):
             y = e.class_details_as_df()
             z = e.compile_df()
 
+    def test_page_with_missing_location_data(self):
+        filename = "data/snapshots/ORALHLTH - Oral Health/2021-07-19/ORALHLTH 2201BHO - Dental & Health Science IIOH Part 2 - 101502+1+4120+FY2.html"
+        with open(filename, 'r') as f:
+            e = Extractor(f.read())
+            x = e.course_details_as_df()
+            y = e.class_details_as_df()
+            z = e.compile_df()
+
 
 if __name__ == "__main__":
     unittest.main()
