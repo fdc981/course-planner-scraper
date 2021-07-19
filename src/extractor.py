@@ -212,6 +212,7 @@ class Extractor:
         for df in dfs:
             # change all entries in the "Available" column with value "FULL" to the maximum capacity of the class
             df.loc[df["Available"] == "FULL", "Available"] = df.loc[df["Available"] == "FULL", "Size"]
+            df.loc[df["Location"].isna(), "Location"] = "none"
 
             self.__sanitise(df)
 
