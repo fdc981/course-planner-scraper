@@ -10,6 +10,7 @@ class Extractor:
         self.soup = bs4.BeautifulSoup(html_str, features="lxml")
         self.course_details = self.soup.find("div", {"id": "hidedata01_1"})
         self.class_details = self.soup.find("div", {"id": "hidedata04_1"})
+        self.warnings = []
 
 
     def __is_group_header(self, elem_soup):
@@ -105,6 +106,7 @@ class Extractor:
 
             extra_data = {}
 
+            extra_data["Warning"] = str(self.warnings)
             extra_data["Class Type"] = tc[trheader_index - 1].string
 
             if trheader_index > 1:
@@ -131,7 +133,7 @@ class Extractor:
                 if "class" in tc[i].attrs and tc[i].attrs["class"] == ["data"]:
                     past_data_tag = tc[i]
                     i += 1
-                elif re.search(r"Note|Topic|Warning", tc[i].get_text()):
+                elif re.search(r"Note|Topic", tc[i].get_text()):
                     extra_data["Annotation"].append(tc[i].get_text())
                     for tag in past_data_tag.find_all("td"):
                         if "rowspan" in tag.attrs:
@@ -199,6 +201,12 @@ class Extractor:
             text = td.get_text().strip()
             if text == "" or text == "-":
                 td.string = "none"
+
+        # collect warnings
+        self.warnings = []
+        for warning in self.class_details.table.find_all("b", attrs={"style": "color: #aa0000;"}):
+            self.warnings.append(warning.string)
+            warning.parent.parent.decompose()
 
         self.__split_html()
 

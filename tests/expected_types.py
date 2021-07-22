@@ -35,6 +35,7 @@ class_col_types = {
     "Subject Area" : f"^{subject_area}$",
     "Catalogue Number" : r"^([0-9]{4}[A-Z]*)$",
     "Course Title" : r"^.+$", # not sure how to parse
+    "Warning": r"^.*$", # not sure how to parse
     "Course ID" : course_id_regex
 }
 
