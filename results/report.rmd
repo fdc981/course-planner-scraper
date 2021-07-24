@@ -10,11 +10,24 @@ library("tidyverse")
 
 courses = read.csv(paste("../data/compiled_data/course_details/", params$date, ".csv", sep=""))
 classes = read.csv(paste("../data/compiled_data/class_details/", params$date, ".csv", sep=""))
+
+classes[classes["Available"] == 'none', "Available"] = 0;
+classes[classes["Size"] == 'none', "Size"] = 0;
 ```
 
 Number of courses: ``r nrow(courses)``.
 
 Number of classes: ``r nrow(classes)``.
+
+```{r, echo=FALSE}
+availabilities = subset(classes, Available <= Size)["Available"];
+sizes = subset(classes, Available <= Size)["Size"];
+
+num.available = as.numeric(colSums(transform(availabilities, Available = as.numeric(Available))))
+total.size = as.numeric(colSums(transform(sizes, Size = as.numeric(Size))))
+```
+
+Filled spots: `r as.character(total.size - num.available)` out of `r as.character(total.size)` 
 
 
 # Number of filled spots against maximum size/capacity of a class
@@ -47,3 +60,27 @@ g + geom_col() + theme(axis.title.x=element_blank(),
                        axis.title.y=element_blank())
 ```
 
+# Proportion of classes filled over time (for all compiled data)
+
+```{r, echo=FALSE}
+csvs = list.files('../data/compiled_data/class_details/');
+
+filled.totals = c()
+size.totals = c()
+
+for (csv.name in csvs) {
+  class.data = read.csv(paste("../data/compiled_data/class_details/", csv.name, sep=""), na.strings="none");
+  
+  availabilities = subset(class.data, Available <= Size)["Available"];
+  sizes = subset(class.data, Available <= Size)["Size"];
+  
+  num.available = as.numeric(colSums(transform(availabilities, Available = as.numeric(Available))))
+  total.size = as.numeric(colSums(transform(sizes, Size = as.numeric(Size))))
+
+  filled.totals = c(filled.totals, total.size - num.available)
+  size.totals = c(size.totals, total.size)
+}
+
+x = as.Date(csvs, format="%Y-%m-%d.csv")
+plot(x, filled.totals / size.totals);
+```
