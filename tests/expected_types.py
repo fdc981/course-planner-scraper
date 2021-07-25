@@ -31,11 +31,11 @@ class_col_types = {
     "Location" : r"^.+$", # not sure how to parse
     "Class Type" : f"^(((Automatic )?Enrolment|Related) Class: {class_type})$",
     "Group" : f"^(none|(Group {english_numeral}))$",
-    "Annotation" : r"^.+$", # not sure how to parse
+    "Annotation" : r"^\[(.+(,.+)*)?\]$",
     "Subject Area" : f"^{subject_area}$",
     "Catalogue Number" : r"^([0-9]{4}[A-Z]*)$",
     "Course Title" : r"^.+$", # not sure how to parse
-    "Warning": r"^.*$", # not sure how to parse
+    "Warning": r"^\[(.+(,.+)*)?\]$",
     "Course ID" : course_id_regex
 }
 
