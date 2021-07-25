@@ -171,7 +171,8 @@ class Extractor:
         df = df.transpose()
 
         if "Biennial Course" in df.columns:
-            df.loc[df["Biennial Course"] == "Reflective Journal 30%, Portfolio 30%, Participation 10%, Teamwork 30%", ["Assessment", "Biennial Course"]] = ["Reflective Journal 30%, Portfolio 30%, Participation 10%, Teamwork 30%", 'none']
+            wrong_info = "Reflective Journal 30%, Portfolio 30%, Participation 10%, Teamwork 30%"
+            df.loc[df["Biennial Course"] == wrong_info, ["Assessment", "Biennial Course"]] = [wrong_info, 'none']
 
         return df
 
