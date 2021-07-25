@@ -5,12 +5,6 @@ from pathlib import Path
 from tests.scraper import validate_html
 
 class TestSnapshotDataValidity(unittest.TestCase):
-    def test_specific_invalid_pages(self):
-        filename = "data/snapshots/MATHS - Mathematical Sciences/2021-04-22/500 - Internal server error. - 110010+1+4120+1.html"
-        with open(filename) as page:
-            soup = bs4.BeautifulSoup(page.read(), features="lxml")
-            self.assertFalse(validate_html(soup))
-
     def test_all_pages_are_valid(self):
         p = Path("data/snapshots")
         page_paths = p.glob("*/%s/*.html" % str(datetime.date.today()))
