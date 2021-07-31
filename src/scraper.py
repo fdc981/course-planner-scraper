@@ -8,6 +8,7 @@ import time
 import os
 from tests.scraper import validate_html
 
+# add some sort of way to restore progress when interrupted?
 
 class Scraper:
 
@@ -15,6 +16,15 @@ class Scraper:
         self.count = 1
         pass
 
+    def file_with_substring_exists(self, path_str : str, substr : str):
+        globbed = pathlib.Path(path_str).glob(f"*{substr}*")
+
+        try:
+            next(globbed)
+            self.count += 1
+            return True
+        except StopIteration:
+            return False
 
     def get(self, url : str, retry_time : int = -1, double_time : bool = False) -> str:
         """Wrapper for requests.get which requests again upon failure.
@@ -45,12 +55,18 @@ class Scraper:
                     continue
 
 
-    def scrape_url(self, url : str, dir_name : str):
+    def scrape_url(self, url : str, dir_name : str, scrape_once : bool = True):
         """Retrieves a page from the course planner, storing it in a file under dir_name."""
         while True:
+            course_id = url.split('=')[-1]
+
+            if scrape_once and self.file_with_substring_exists(dir_name, course_id):
+                print(f"({self.count}) Already scraped, skipping page with:", course_id)
+                self.count += 1
+                return
+
             course_page = self.get(url, 5, True)
             course_page_soup = bs4.BeautifulSoup(course_page.text, features="lxml")
-            course_id = url.split('=')[-1]
             course_title = course_page_soup.title.text.replace('/', '-')
 
             print(f"({self.count}) Scraping:", course_title, "-", course_id)
