@@ -90,12 +90,23 @@ class Scraper:
 
     def get_course_list(self, year_to_retrieve : int = datetime.date.today().year):
         """Obtains a list of URLs pointing to the pages of every course accessible in the course planner."""
-        search_page_html = self.get('https://access.adelaide.edu.au/courses/search.asp', 5, True)
-        search_page_soup = bs4.BeautifulSoup(search_page_html.text, features="lxml")
+        while True:
+            search_page_html = self.get('https://access.adelaide.edu.au/courses/search.asp', 5, True)
+            search_page_soup = bs4.BeautifulSoup(search_page_html.text, features="lxml")
+
+            select_dropdown = search_page_soup.find('select')
+            if select_dropdown == None:
+                print('\a')
+                print("** Warning: missing dropdown in main course planner page.")
+                x = input("Repeat this scrape [Y/n]? ")
+                if x.lower() == "n":
+                    break
+            else:
+                break
 
         # get list of subject areas from dropdown box
         subject_areas = []
-        for option in search_page_soup.find('select').find_all('option'):
+        for option in select_dropdown.find_all('option'):
             subject_areas.append(option.text)
 
         subject_areas.remove('All Subject Areas')
