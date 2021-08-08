@@ -132,9 +132,22 @@ class Scraper:
 
             print("Scraping:", subject_area)
 
-            course_listing_link = "https://access.adelaide.edu.au/courses/search.asp?year=%s&m=r&title=&subject=%s&catalogue=&action=Search&term=&career=&campus=&class=&sort=" % (str(year_to_retrieve), subject_area)
-            course_listing_page = self.get(course_listing_link, 5, True)
-            course_listing_soup = bs4.BeautifulSoup(course_listing_page.text, features="lxml")
+            while True:
+                course_listing_link = "https://access.adelaide.edu.au/courses/search.asp?year=%s&m=r&title=&subject=%s&catalogue=&action=Search&term=&career=&campus=&class=&sort=" % (str(year_to_retrieve), subject_area)
+                course_listing_page = self.get(course_listing_link, 5, True)
+                course_listing_soup = bs4.BeautifulSoup(course_listing_page.text, features="lxml")
+
+                if course_listing_soup.find('a', href=re.compile(r'details')) == None:
+                    print('\a')
+                    print(f"** Warning: missing course list details for {subject_area}.")
+                    x = input("Repeat this scrape [Y/n]? ")
+                    if x.lower() == "n":
+                        print("Skipping...")
+                        return
+                    else:
+                        continue
+                else:
+                    break
 
             for link in course_listing_soup.find_all('a', href=re.compile(r'details')):
                 courses_to_scrape.append('https://access.adelaide.edu.au/courses/' + link.attrs['href'])
