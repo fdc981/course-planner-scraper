@@ -78,7 +78,11 @@ class Scraper:
                 print("** Warning: data may be missing for", course_title, "with url", url)
                 x = input("Repeat this scrape [Y/n]? ")
                 if x.lower() == "n":
-                    break
+                    print("Skipping...")
+                    self.count += 1
+                    return
+                else:
+                    continue
             else:
                 break
 
@@ -100,7 +104,11 @@ class Scraper:
                 print("** Warning: missing dropdown in main course planner page.")
                 x = input("Repeat this scrape [Y/n]? ")
                 if x.lower() == "n":
-                    break
+                    print("Skipping...")
+                    self.count += 1
+                    return
+                else:
+                    continue
             else:
                 break
 
