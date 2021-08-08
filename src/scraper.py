@@ -16,6 +16,7 @@ class Scraper:
         self.count = 1
         pass
 
+
     def file_with_substring_exists(self, path_str : str, substr : str):
         globbed = pathlib.Path(path_str).glob(f"*{substr}*")
 
@@ -25,6 +26,7 @@ class Scraper:
             return True
         except StopIteration:
             return False
+
 
     def get(self, url : str, retry_time : int = -1, double_time : bool = False) -> str:
         """Wrapper for requests.get which requests again upon failure.
@@ -91,6 +93,7 @@ class Scraper:
         html_file.close()
 
         self.count += 1
+
 
     def get_course_list(self, year_to_retrieve : int = datetime.date.today().year):
         """Obtains a list of URLs pointing to the pages of every course accessible in the course planner."""
