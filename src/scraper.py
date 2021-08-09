@@ -6,6 +6,7 @@ import pathlib
 import requests
 import time
 import os
+import urllib.parse
 from tests.scraper import validate_html
 
 # add some sort of way to restore progress when interrupted?
@@ -133,7 +134,7 @@ class Scraper:
             print("Scraping:", subject_area)
 
             while True:
-                course_listing_link = "https://access.adelaide.edu.au/courses/search.asp?year=%s&m=r&title=&subject=%s&catalogue=&action=Search&term=&career=&campus=&class=&sort=" % (str(year_to_retrieve), subject_area)
+                course_listing_link = f"https://access.adelaide.edu.au/courses/search.asp?year={year_to_retrieve}&m=r&title=&subject={urllib.parse.quote(subject_area)}&catalogue=&action=Search&term=&career=&campus=&class=&sort=" 
                 course_listing_page = self.get(course_listing_link, 5, True)
                 course_listing_soup = bs4.BeautifulSoup(course_listing_page.text, features="lxml")
 
