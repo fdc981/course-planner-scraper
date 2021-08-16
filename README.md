@@ -1,6 +1,16 @@
 course-planner-scraper
 ----------------------
 
+# Dependencies
+
+This program requires a few dependencies as outlined in `requirements.txt`. To install them use
+
+```sh
+pip install -r requirements.txt
+```
+
+within a [venv](https://docs.python.org/3/library/venv.html) if possible.
+
 # Usage
 
 Scrape and process data:
