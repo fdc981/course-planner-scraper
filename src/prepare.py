@@ -3,8 +3,8 @@ import datetime
 import pathlib
 from src.extractor import Extractor
 
-def compile_data(date : str = str(datetime.date.today())):
-    """Compile all html data under data/snapshots/*/ to two separate csv files."""
+def compile_to_csv(date : str = str(datetime.date.today())):
+    """Compile all html data located under data/snapshots/*/ to two separate csv files."""
     course_df = pd.DataFrame()
     class_df = pd.DataFrame()
 
@@ -33,3 +33,8 @@ def compile_data(date : str = str(datetime.date.today())):
 
     course_df.to_csv("data/compiled_data/course_details/%s.csv" % date, index=False, na_rep="none")
     class_df.to_csv("data/compiled_data/class_details/%s.csv" % date, index=False)
+
+
+def compile_to_sql(date : str = str(datetime.date.today())):
+    """Compile all html data from data/snapshots/*/ into a SQLLite database stored as data/sql"""
+    pass
