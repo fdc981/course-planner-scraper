@@ -11,7 +11,6 @@ def compile_to_csv(date : str = str(datetime.date.today())):
     root = pathlib.Path('.')
     paths = root.glob("data/snapshots/*/%s/" % date)
 
-    htmls = []
     for path in paths:
         for html_path in path.iterdir():
             print("compiling data for:", str(html_path))
