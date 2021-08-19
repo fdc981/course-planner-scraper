@@ -2,6 +2,7 @@ import pandas as pd
 import datetime
 import pathlib
 from src.extractor import Extractor
+import sqlalchemy
 
 def compile_to_csv(date : str = str(datetime.date.today())):
     """Compile all html data located under data/snapshots/*/ to two separate csv files."""
@@ -35,5 +36,39 @@ def compile_to_csv(date : str = str(datetime.date.today())):
 
 
 def compile_to_sql(date : str = str(datetime.date.today())):
-    """Compile all html data from data/snapshots/*/ into a SQLLite database stored as data/sql"""
-    pass
+    """Compile all html data from data/snapshots/*/ into a SQLLite database stored as data/store.db"""
+    engine = sqlalchemy.create_engine("sqlite:///data/store.db", echo=False)
+
+    root = pathlib.Path('.')
+    paths = root.glob("data/snapshots/*/%s/" % date)
+
+    for path in paths:
+        for html_path in path.iterdir():
+            print("compiling data for:", str(html_path))
+            # read html_path
+            f = open(str(html_path), 'r')
+            subject_area = '/'.split(str(html_path.parent))[-1]
+
+            # extract data
+            ex = Extractor(f.read())
+            f.close()
+            course_details, class_details = ex.compile_df()
+
+            course_details['Course ID'] = course_details['Course ID'].astype(str)
+            class_details['Course ID'] = class_details['Course ID'].astype(str)
+
+            course_table = course_details.merge(class_details)
+            course_table['date_scraped'] = date
+
+            # append to main table if not empty
+            if not course_table.empty:
+                try:
+                    course_table.to_sql('main', engine, if_exists='append')
+                except ValueError:
+                    old_table = pd.read_sql('SELECT * FROM main', engine)
+
+                    if 'level_0' in old_table.columns:
+                        del tmp_df['level_0']
+
+                    new_table = tmp_df.append(course_table)
+                    new_table.to_sql('main', engine, if_exists='replace')
